@@ -10,11 +10,12 @@ logger = logging.getLogger(__name__)
 
 class Scheduler:
 
-    def __init__(self, orig_lat, orig_lng, dest_lat, dest_lng):
-        self.orig_lat = orig_lat
-        self.orig_lng = orig_lng
-        self.dest_lat = dest_lat
-        self.dest_lng = dest_lng
+    def __init__(self, orig_lat, orig_lng, dest_lat, dest_lng, local_time):
+        self.orig_lat   = orig_lat
+        self.orig_lng   = orig_lng
+        self.dest_lat   = dest_lat
+        self.dest_lng   = dest_lng
+        self.local_time = local_time
 
     def validate_data(self):
         if (self.orig_lat and self.orig_lng and self.dest_lat and self.dest_lng):
@@ -25,7 +26,7 @@ class Scheduler:
     def get_schedule(self):
         if not self.validate_data:
             return
-        url_proc = UrlProcessor(self.orig_lat, self.orig_lng, self.dest_lat, self.dest_lng)
+        url_proc = UrlProcessor(self.orig_lat, self.orig_lng, self.dest_lat, self.dest_lng, self.local_time)
         '''Algorithmn to update count and range'''
         url_list = url_proc.create_url(24, 24)
         logger.info("Processing URL List {}".format(url_list))

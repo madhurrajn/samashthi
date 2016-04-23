@@ -10,7 +10,8 @@ def handlePostMethod(request):
     orig_lng = request.POST.get("orig_lng")
     dest_lat = request.POST.get("dest_lat")
     dest_lng = request.POST.get("dest_lng")
-    sched = Scheduler(orig_lat, orig_lng, dest_lat, dest_lng)
+    local_time = request.POST.get("localtime")
+    sched = Scheduler(orig_lat, orig_lng, dest_lat, dest_lng, local_time)
     return (sched.get_schedule())
 
 def index(request):

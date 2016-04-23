@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
   <head>
     <title>Place Autocomplete</title>
@@ -191,6 +192,14 @@
             form.setAttribute("method", method);
             form.setAttribute("action", path);
 
+            var localtime = moment().utcOffset();
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "localtime");
+            hiddenField.setAttribute("value", localtime);
+            console.log(localtime);
+            form.appendChild(hiddenField);
+
 
             var hiddenField = document.createElement("input");
             hiddenField.setAttribute("type", "hidden");
@@ -253,5 +262,6 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"
         async defer></script>
+    <script src="http://momentjs.com/downloads/moment.js"></script>
   </body>
 </html>

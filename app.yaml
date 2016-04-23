@@ -24,6 +24,8 @@ version: 1
 handlers:
 - url: /static
   static_dir: static/
+- url: /startnow/static
+  static_dir: /startnow/static/
 - url: .*
   script: mysite.wsgi.application
 

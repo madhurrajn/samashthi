@@ -1,4 +1,5 @@
 import time
+import datetime
 
 import logging 
 
@@ -7,15 +8,20 @@ logger = logging.getLogger(__name__)
 SECONDS_IN_HOUR=3600
 
 class UrlProcessor:
-    def __init__(self, orig_lat, orig_lng, dest_lat, dest_lng):
-        self.orig_lat = orig_lat
-        self.orig_lng = orig_lng
-        self.dest_lat = dest_lat
-        self.dest_lng = dest_lng
+    def __init__(self, orig_lat, orig_lng, dest_lat, dest_lng, local_time):
+        self.orig_lat  = orig_lat
+        self.orig_lng  = orig_lng
+        self.dest_lat  = dest_lat
+        self.dest_lng  = dest_lng
+        self.local_time = local_time
         # self.ref_string="https://www.google.co.in/maps/preview/directions?authuser=0&hl=en&pb=!1m5!1s12.8857037%2C77.566548!3m2!3d12.885703699999999!4d77.566548!6e2!1m5!1s12.9394137%2C77.69520310!3m2!3d12.9394137!4d77.6952031!6e2!2e0!3m12!1m3!1d120719.55006746609!2d77.62934954999999!3d12.910809949999996!2m3!1f0!2f0!3f0!3m2!1i706!2i745!4f13.1!6m14!1m0!2m3!5m1!2b0!20e3!10b1!16b1!19m3!1e0!2e2!3j1460736000!20m2!1e0!2e3!8m0!15m4!1sfogQV4rFGIeajwPAzI3QAQ!4m1!2i7296!7e81!20m0!27b1!28m0"
         self.ref_string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins='Mysore'&destinations='Bangalore'&mode=driving&departure_time=now&key=AIzaSyCO9qZ4EGkX9xU7-n4r2v6u9AGk4_j6Kk4"
         # self.static_string="https://www.google.co.in/maps/preview/directions?authuser=0&hl=en&pb=!1m5!1sORIG_LAT_LONG!3m2!3dORIG_LAT!4dORIG_LNG!6e2!1m5!1sDEST_LAT_LONG!3m2!3dDEST_LAT!4dDEST_LNG!6e2!2e0!3m12!1m3!1d120719.55006746609!2d77.62934954999999!3d12.910809949999996!2m3!1f0!2f0!3f0!3m2!1i706!2i745!4f13.1!6m14!1m0!2m3!5m1!2b0!20e3!10b1!16b1!19m3!1e0!2e2!3jDEPARTAT!20m2!1e0!2e3!8m0!15m4!1sfogQV4rFGIeajwPAzI3QAQ!4m1!2i7296!7e81!20m0!27b1!28m0"
         self.static_string = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=ORIG_LAT_LNG&destinations=DEST_LAT_LNG&mode=driving&departure_time=DEPARTAT&key=AIzaSyCO9qZ4EGkX9xU7-n4r2v6u9AGk4_j6Kk4"
+
+        self.time_zone_url = "https://maps.googleapis.com/maps/api/timezone/json?location=ORIG_LAT_LONG&timestamp=1331766000&key=AIzaSyCO9qZ4EGkX9xU7-n4r2v6u9AGk4_j6Kk4"
+
+
 
     def get_lat_long_url(self):
         str = self.static_string.replace(
@@ -33,9 +39,11 @@ class UrlProcessor:
     def create_url_list(self, url, count, curr_time, delta):
         url_list = []
         logger.info("url {}, count {}, curr_time {}, delta {}".format(url, count, curr_time, delta))
-        actual_time = curr_time
+        actual_time = curr_time + int(self.local_time)*60
         for i in range(1,count):    
-            logger.info("Processing url {}".format(i))
+            utime =  datetime.datetime.fromtimestamp(float(actual_time)).strftime('%Y-%m-%d %H:%M:%S')
+            logger.info("Processing url {} time {}".format(i, utime))
+            print utime
             url_str = self.update_time_in_url(url, actual_time)
             url_list.append((actual_time,url_str))
             actual_time = actual_time + delta
