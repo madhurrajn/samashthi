@@ -8,7 +8,7 @@ import datetime
 import urlparse
 from deploy import DEPLOY_STATUS
 from google.appengine.api import urlfetch
-#import grequests
+import grequests
 
 logging.basicConfig()
 

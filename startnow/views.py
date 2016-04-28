@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.template import RequestContext, loader
 from django.http import HttpResponse
+from django.http import JsonResponse
 from startnow import  Scheduler
+import json
 
 def handlePostMethod(request):
     print "Inside post method"
@@ -14,13 +16,22 @@ def handlePostMethod(request):
     sched = Scheduler(orig_lat, orig_lng, dest_lat, dest_lng, local_time)
     return (sched.get_schedule())
 
+
+def json_schedule_list(list):
+    json_list = []
+    for date, duration in list:
+        d = {}
+        d['date']=date
+        d['duration']=duration
+        json_list.append(d)
+    return json_list
+
 def index(request):
     if request.method == 'POST':
         list = handlePostMethod(request)
-        template = loader.get_template('startnow/dir.html')
-        context = RequestContext(request, {
-            'sched_list':list})
-        return HttpResponse(template.render(context))
+        json_list = json_schedule_list(list)
+        print json_list
+        return JsonResponse({'sched_list':json_list})
     else:
         template = loader.get_template('startnow/index.html')
         context = RequestContext(request)
