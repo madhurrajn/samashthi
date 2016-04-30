@@ -73,6 +73,7 @@ class RequestProcessor:
 
     def process_async_requests(self, url_list):
         async_list = []
+        print url_list
         async_requests = [grequests.get(url) for time,url in url_list]
         rs = grequests.map(async_requests)
         result = self.parse_reponses(rs)
@@ -112,7 +113,6 @@ class RequestProcessor:
             if DEPLOY_STATUS == 1:
                 return (self.process_google_requests(url_list))
             else:
-                print "Deploy status false"
                 return (self.process_async_requests(url_list))
         except Exception as e:
             logger.error("Unable to open deploy.text file {}".format(e))
