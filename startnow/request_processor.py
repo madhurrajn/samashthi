@@ -1,14 +1,11 @@
 import logging 
-#import ssl
 import simplejson
 import urllib2
 import datetime
-#from multiprocessing.dummy import Pool as ThreadPool
-#from request import async
 import urlparse
 from deploy import DEPLOY_STATUS
 from google.appengine.api import urlfetch
-import grequests
+#import grequests
 
 logging.basicConfig()
 
@@ -21,8 +18,6 @@ class RequestProcessor:
         self.result = []
 
     def process_atomic_request(self, (atime, url)):
-        #context = ssl._create_unverified_context()
-        #response = simplejson.load(urllib2.urlopen(url, context=context))
         response = simplejson.load(urllib2.urlopen(url))
         status = response['status']
         if status == "OK":
@@ -33,16 +28,6 @@ class RequestProcessor:
                 for e in elems:
                     duration = e['duration_in_traffic']['text']
         return (utime, duration)
-
-    #def process_async_requests(self, url_list):
-    #    pool = ThreadPool(len(url_list))
-    #    result = pool.map(self.process_atomic_request, url_list)
-    #    pool.close()
-    #    pool.join()
-    #    return result
-
-    #def process_async_response(self, response):
-    #    print response
 
     def parse_url_time(self, url):
         query_string_dict = urlparse.parse_qs(url)
@@ -62,13 +47,22 @@ class RequestProcessor:
         logger.info("Duration deduced {}".format(duration))
         return duration
 
+    def process_duration(self, duration):
+        item_list = duration.split(" ")
+        if "hour" in duration:
+            duration_in_min = int(item_list[0]) * 60 + int(item_list[2])
+            return duration_in_min
+        else:
+            return item_list[0]
+
     def parse_reponses(self, responses):
         result = []
         for response in responses:
             utime = self.parse_url_time(response.url)
             rs = simplejson.loads(response.content)
             duration = self.parse_rs(response.url, rs)
-            result.append((utime, duration))
+            fin_duration = self.process_duration(duration)
+            result.append((utime, fin_duration))
         return result
 
     def process_async_requests(self, url_list):
@@ -85,7 +79,8 @@ class RequestProcessor:
         response = rpc.get_result()
         json_dict = simplejson.loads(response.content)
         duration = self.parse_rs(url, json_dict)
-        self.result.append((utime, duration))
+        fin_duration = self.process_duration(duration)
+        self.result.append((utime, fin_duration))
 
     def create_callback(self, rpc):
         return lambda: self.url_fetch_handle_responses(rpc)

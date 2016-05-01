@@ -39,7 +39,8 @@ class UrlProcessor:
     def create_url_list(self, url, count, curr_time, delta):
         url_list = []
         logger.info("url {}, count {}, curr_time {}, delta {}".format(url, count, curr_time, delta))
-        actual_time = curr_time + int(self.local_time)*60
+        #actual_time = curr_time + int(self.local_time)*60
+        actual_time = curr_time 
         for i in range(1,count):    
             utime =  datetime.datetime.fromtimestamp(float(actual_time)).strftime('%Y-%m-%d %H:%M:%S')
             logger.info("Processing url {} time {}".format(i, utime))

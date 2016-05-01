@@ -39,6 +39,16 @@
         $scope.url = url;
     };
 
+    $scope.duration_list = [
+        {'value': '2 Hours'},
+        {'value': '4 Hours'},
+        {'value': '6 Hours'},
+        {'value': '8 Hours'},
+        {'value': '10 Hours'},
+        {'value': '24 Hours'},
+        {'value': 'Week'},
+    ];
+
 
 
     $scope.initMap = function() {
@@ -222,7 +232,6 @@
         duration_list = [];
         date_list = [];
         for (var i=0;i<duration_list_1.length; i++){
-            duration_list_1[i].replace('min', '');
             duration_list_1[i] = parseInt(duration_list_1[i]);
             console.log(duration_list_1[i]);
         }
@@ -275,4 +284,3 @@
     };
     $scope.initMap();
 }]);
-

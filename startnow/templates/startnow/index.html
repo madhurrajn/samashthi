@@ -5,20 +5,36 @@
 {% block pageblock %}
 <div ng-app="startnow" ng-controller="FetchController">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="card filter">
                 <div class="header">
                     <h4 class="title">Trip Info</h4>
                 </div>
                 <div class="content">
                     <div class="container-fluid">
+                        <i class="pe-7s-map-marker"></i>
                         <input id="origin-input" class="controls" type="text"
-                            placeholder="Enter an origin location">
+                            placeholder="Enter an origin location"></p>
+                        <i class="pe-7s-map-marker"></i>
                         <input id="destination-input" class="controls" type="text"
                             placeholder="Enter a destination location">
                         <div class="footer">
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card filter">
+                <div class="header">
+                    <h4 class="title">
+                        <i class="pe-7s-clock ">
+                            Start
+                                <select ng-model="choice"
+                                    ng-options="duration.value for duration in duration_list"> 
+                                </select>
+                        </i>
+                    </h4>
                 </div>
             </div>
         </div>
