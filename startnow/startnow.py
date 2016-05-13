@@ -4,8 +4,11 @@ import datetime
 ''' Local Modules '''
 from url_processor import UrlProcessor
 from request_processor import RequestProcessor
+from path_processor import PathProcessor
 
 logger = logging.getLogger(__name__)
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Scheduler:
@@ -33,6 +36,14 @@ class Scheduler:
         if len(url_list) > 0:
             request_processor = RequestProcessor(url_list)
             resp = request_processor.process_requests(url_list)
+            path_proc = PathProcessor(resp)
+            min, max, curr = path_proc.getDetails()
+            try:
+                resp.append(('min_duration', min))
+                resp.append(('max_duration', max))
+                resp.append(('cur_duration', curr))
+            except Exception as e:
+                print e
             for ts_epoch, duration in resp:
                 logger.info("{} {}".format(ts_epoch, duration))
         return resp

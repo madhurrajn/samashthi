@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from startnow import  Scheduler
 import json
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 def handlePostMethod(request):
     print "Inside post method"
@@ -21,11 +22,15 @@ def json_schedule_list(list):
     json_list = []
     for date, duration in list:
         d = {}
-        d['date']=date
-        d['duration']=duration
+        if 'duration' in date:
+            d[date] = duration
+        else:
+            d['date']=date
+            d['duration']=duration
         json_list.append(d)
     return json_list
 
+@ensure_csrf_cookie
 def index(request):
     if request.method == 'POST':
         list = handlePostMethod(request)

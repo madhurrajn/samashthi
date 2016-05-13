@@ -25,6 +25,7 @@
                     $scope.data = response.data;
                     $scope.sched_lists = response.data.sched_list;
                     buildChart($scope.sched_lists);
+                    buildGuage($scope.sched_lists);
                     $scope.sched_lists.forEach(function(elem){
                         console.log(elem)
                     });
@@ -216,8 +217,10 @@
           travelMode: travel_mode
         }, function(response, status) {
           if (status === google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
-            console.log(origin_place_id, destination_place_id, orig_place, dest_place);
+            for (var i=0, len=response.routes.length; i < len; i++){
+                directionsDisplay.setDirections(response);
+                console.log(origin_place_id, destination_place_id, orig_place, dest_place);
+            }
             $scope.fetch("/startnow/", orig_place.geometry.location.lat(),orig_place.geometry.location.lng(), 
               dest_place.geometry.location.lat(),dest_place.geometry.location.lng(), "post");
           } else {
@@ -225,6 +228,58 @@
           }
         });
       }
+    };
+    var buildGuage = function(sched_list){
+        var min_val = 0;
+        var max_val = 0;
+        var cur_val = 0;
+        min_duration = _.pluck(sched_list, 'min_duration');
+        max_duration = _.pluck(sched_list, 'max_duration');
+        cur_duration = _.pluck(sched_list, 'cur_duration');
+        for (var i=0; i<min_duration.length; i++){
+            if(min_duration[i] != undefined){
+                min_val = min_duration[i]
+            }
+        }
+        for (var i=0; i<max_duration.length; i++){
+            if(max_duration[i] != undefined){
+                max_val = max_duration[i]
+            }
+        }
+        for (var i=0; i<cur_duration.length; i++){
+            if(cur_duration[i] != undefined){
+                cur_val = cur_duration[i]
+            }
+        }
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart(){
+            cur_val = parseInt(cur_val);
+            var data = google.visualization.arrayToDataTable([
+                ['Label', 'Value'],
+                ['Best Time', cur_val]
+            ]);
+            min_val = parseInt(min_val)
+            max_val = parseInt(max_val)
+            var variance = max_val - min_val;
+            var variance_segment = variance/3;
+            var red_from = min_val + (variance * 2 / 3)
+            var red_to = max_val
+            var yellow_from = min_val + (variance / 3)
+            var yellow_to = min_val + (variance * 2 / 3)
+            var options = {
+                width: 400, height: 120,
+                redFrom: red_from, redTo:red_to,
+                yellowFrom : yellow_from, yellowTo: yellow_to,
+                min: min_val, max: max_val,
+                minorTicks: 5
+            };
+            var chart = new google.visualization.Gauge(document.getElementById('guage_chart'))
+            chart.draw(data, options);
+            setInterval(function() {
+              data.setValue(0, 1, cur_val);
+              chart.draw(data, options);
+            }, 1000);
+        };
     };
     var buildChart = function(sched_list){
         date_list_1 = _.pluck(sched_list, 'date');
@@ -281,6 +336,13 @@
             }],
             loading: false
         });
+    };
+    $scope.isSchedSet = function(){
+        if ($scope.sched_lists){
+            return true;
+        }
+        else
+            return false;
     };
     $scope.initMap();
 }]);
