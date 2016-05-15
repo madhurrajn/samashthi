@@ -58,11 +58,22 @@
       var destination_place_id = null;
       var dest_place = null;
       var travel_mode = google.maps.TravelMode.DRIVING;
+      var pos = {lat: 12.9356, lng: 77.7023};
       var map = new google.maps.Map(document.getElementById('map'), {
         mapTypeControl: false,
-        center: {lat: 12.9356, lng: 77.7023},
-        zoom: 13
+        zoom: 13,
+        center: pos
       });
+      if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+            map.setZoom(15);
+        });
+      }
       var directionsService = new google.maps.DirectionsService;
       var directionsDisplay = new google.maps.DirectionsRenderer;
       directionsDisplay.setMap(map);
@@ -256,7 +267,7 @@
             cur_val = parseInt(cur_val);
             var data = google.visualization.arrayToDataTable([
                 ['Label', 'Value'],
-                ['Best Time', cur_val]
+                ['Now', cur_val]
             ]);
             min_val = parseInt(min_val)
             max_val = parseInt(max_val)
