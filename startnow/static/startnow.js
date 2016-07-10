@@ -50,8 +50,6 @@
         {'value': 'Week'},
     ];
 
-
-
     $scope.initMap = function() {
       var origin_place_id = null;
       var orig_place = null;

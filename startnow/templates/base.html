@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="{% static 'assets/img/favicon.ico' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="google-signin-client_id" content="886891703048-ie88ccf5s79ke7at8ehpmk8lgtno0n1h.apps.googleusercontent.com"> 
 
     <title>Start Now App by Madhur</title>
 
@@ -28,19 +29,70 @@
 
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="{% static 'assets/css/pe-icon-7-stroke.css' %}" rel="stylesheet" />
-    <script src="http://momentjs.com/downloads/moment.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://underscorejs.org/underscore-min.js"></script>
-    <script src="http://www.gstatic.com/charts/loader.js"></script>
+    <link href="{% static 'assets/css/font-awesome.min.css' %}" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="{% static 'assets/js/moment.js' %}" ></script>
+    <script src="{% static 'assets/js/underscorejs-min.js' %}" ></script>
     <script>
         google.charts.load('current', {'packages':['gauge']});
     </script>
         
 </head>
 <body>
+                                <script>
+                                      function onSuccess2(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+      };
+      function onFailure(){
+        console.log("Login Failed");
+        };
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+        function login() 
+        {
+          var myParams = {
+            'clientid' : '886891703048-ie88ccf5s79ke7at8ehpmk8lgtno0n1h.apps.googleusercontent.com',
+            'cookiepolicy' : 'single_host_origin',
+            'callback' : 'loginCallback',
+            'approvalprompt':'force',
+            'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
+          };
+          gapi.auth2.signIn(myParams);
+        }
+                               </script>
+                               <div class="g-signin2 social_signin" data-onsucces="onSuccess2"  data-onfailure="onFailure"></div>
+                                <a href="#" onclick="signOut();">Sign out</a>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41060534-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
 
 <div class="wrapper">
     <div class="sidebar" data-color="azure" data-image="{% static 'assets/img/sidebar-6.jpg' %}">
@@ -172,8 +224,6 @@
 
             </div>
         </div>
-
-
         <footer class="footer">
             <div class="container-fluid">
                 <nav class="pull-left">
@@ -213,6 +263,7 @@
 </body>
 
     <!--   Core JS Files   -->
+    <script src="https://apis.google.com/js/platform.js?onload=gauthOnLoadCallback" async defer></script>
     <script src="{% static 'assets/js/jquery-1.10.2.js' %}" type="text/javascript"></script>
     <script src="{% static 'assets/js/bootstrap.min.js' %}" type="text/javascript"></script>
 
@@ -225,7 +276,7 @@
     <script src="{% static 'assets/js/bootstrap-notify.js' %}"></script>
 
     <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkwaMJdD1Kuz3nAdA5NdgKMbcwggKhfQo&libraries=places"></script>
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
     <script src="{% static 'assets/js/light-bootstrap-dashboard.js' %}"></script>
